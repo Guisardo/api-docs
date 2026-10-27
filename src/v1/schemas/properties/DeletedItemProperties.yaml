@@ -1,0 +1,17 @@
+DeletedItemProperties:
+  type: object
+  required:
+    - entity
+    - deleted_at
+  properties:
+    entity:
+      type: string
+      description: What kind of item was deleted. At this time only "transactions".
+      enum:
+        - transactions
+      example: transactions
+    deleted_at:
+      type: string
+      format: date-time
+      description: The moment the item was deleted.
+      example: "2026-06-15T10:00:00+02:00"

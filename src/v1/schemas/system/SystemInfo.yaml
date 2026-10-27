@@ -25,3 +25,15 @@ SystemInfo:
           type: string
           format: string
           example: "mysql"
+        capabilities:
+          type: array
+          description: |
+            The names of the optional features of this API that the server supports.
+            incremental.transactions: the list of transactions accepts created_since, created_until, updated_since, updated_until and sort.
+            deleted_items: the endpoint /v1/data/deleted lists deleted transactions.
+            The field is absent on servers that do not report their capabilities. A client has to assume that none of the features exist then.
+          items:
+            type: string
+          example:
+            - incremental.transactions
+            - deleted_items

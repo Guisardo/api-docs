@@ -34,6 +34,58 @@
         required: false
         schema:
           $ref: '#/components/schemas/TransactionTypeFilter'
+      - in: query
+        name: created_since
+        description: |
+          Only return transactions that were created at or after this moment (inclusive).
+          An ISO-8601 date (2026-06-15, from the start of that day) or a date and time (2026-06-15T10:00:00+02:00 or 2026-06-15T08:00:00Z).
+          A time without an offset is read in the timezone of the Firefly III installation.
+          The value is compared with the "created_at" of the transaction. Clients must URL-encode the plus sign of an offset.
+        required: false
+        schema:
+          type: string
+          example: "2026-06-15T10:00:00+02:00"
+      - in: query
+        name: created_until
+        description: |
+          Only return transactions that were created at or before this moment (inclusive).
+          The same formats as "created_since"; a date without a time means the end of that day. Must not be before "created_since".
+        required: false
+        schema:
+          type: string
+          example: "2026-06-30"
+      - in: query
+        name: updated_since
+        description: |
+          Only return transactions that were changed at or after this moment (inclusive). The same formats as "created_since".
+          The value is compared with the "updated_at" of the transaction. It moves when a transaction is created, edited,
+          changed by a rule or moved to another account, and when one split of a transaction that has other splits is deleted.
+          It does not move when an account, category or budget that the transaction uses is renamed, or when transactions are marked as reconciled in the web interface.
+          Transactions that were deleted altogether are not listed, see /v1/data/deleted.
+        required: false
+        schema:
+          type: string
+          example: "2026-06-15T10:00:00+02:00"
+      - in: query
+        name: updated_until
+        description: |
+          Only return transactions that were changed at or before this moment (inclusive).
+          The same formats as "created_since"; a date without a time means the end of that day. Must not be before "updated_since".
+        required: false
+        schema:
+          type: string
+          example: "2026-06-30"
+      - in: query
+        name: sort
+        description: |
+          The order of the list: a comma separated list of the fields id, created_at and updated_at. Put a minus sign in front of a field to sort descending, for example -updated_at.
+          The order always ends in the ID of the transaction (in the direction of the last field) and the splits of a transaction stay together, so the order is stable from page to page.
+          Without "sort" the list is ordered by date, newest first.
+          To follow what changed, combine "updated_since" with sort=updated_at.
+        required: false
+        schema:
+          type: string
+          example: "updated_at"
     responses:
       "200":
         description: A list of transactions.
@@ -41,6 +93,7 @@
           application/vnd.api+json:
             schema:
               $ref: '#/components/schemas/TransactionArray'
+      _tpl_validationErrorResponse,3:
       _tpl_unauthenticatedResponse,3:
       _tpl_notFoundResponse,3:
       _tpl_badRequestResponse,3:
