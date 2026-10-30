@@ -1,0 +1,46 @@
+/data/deleted:
+  get:
+    tags:
+      - data
+    operationId: listDeletedItems
+    summary: List what was deleted since a moment.
+    description: |
+      Lists the items that were deleted, oldest deletion first (ties by ID). At this time these are transactions.
+      A client that keeps a copy of the user's transactions can use this list to remove what was deleted since its last visit: pass the moment of that visit in "since".
+      The ID of an item is the ID of the deleted transaction.
+      Only deletions that are still on record can be listed: after a call to /v1/data/purge a deletion is forgotten.
+      Deleting one split of a transaction that has other splits is not a deletion of the transaction. The transaction stays and its "updated_at" moves.
+      Like the list of transactions this list follows the selected financial administration and needs the read role in it.
+    parameters:
+      _tpl_correlationParameter,3:
+      _tpl_limitParameter,3:
+      _tpl_pageParameter,3:
+      - in: query
+        name: since
+        description: |
+          Only return deletions at or after this moment (inclusive). An ISO-8601 date (from the start of that day) or a date and time,
+          the same formats as the filters of the list of transactions. Leave it out to list every deletion on record.
+        required: false
+        schema:
+          type: string
+          example: "2026-06-15T10:00:00+02:00"
+      - in: query
+        name: types
+        description: |
+          A comma separated list of the kinds of items to list. Only "transactions" is supported at this time, anything else is rejected. This is the default.
+        required: false
+        schema:
+          type: string
+          example: "transactions"
+    responses:
+      "200":
+        description: A list of deleted items, oldest deletion first.
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/DeletedItemArray'
+      _tpl_validationErrorResponse,3:
+      _tpl_unauthenticatedResponse,3:
+      _tpl_notFoundResponse,3:
+      _tpl_badRequestResponse,3:
+      _tpl_internalExceptionResponse,3:

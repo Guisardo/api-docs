@@ -1,0 +1,17 @@
+DeletedItemRead:
+  type: object
+  required:
+    - type
+    - id
+    - attributes
+  properties:
+    type:
+      type: string
+      description: Always "deleted-items".
+      example: deleted-items
+    id:
+      type: string
+      description: The ID of the deleted item. For the entity "transactions" this is the ID of the transaction.
+      example: "123"
+    attributes:
+      $ref: '#/components/schemas/DeletedItemProperties'
